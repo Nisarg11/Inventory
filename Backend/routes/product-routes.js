@@ -1,27 +1,24 @@
 const express = require('express');
+
+const {check} = require('express-validator');
+
+const productsControllers = require('../controllers/products-controllers');
 const router = express.Router();
 
+router.get('/:pid', productsControllers.getProductById);
 
-const dummy_products =[{
+router.post('/add',[check('item').not().isEmpty(),
+check('type').not().isEmpty(),
+check('quantity').isNumeric().not().isEmpty(),
+check('price').isNumeric().not().isEmpty()
+],  productsControllers.createProduct);
 
-    id: "d1",
-    Item: "Hammer",
-    Type: "150 S6 DTH",
-    Quantity : "01",
-    Price: "100000"
-}];
+router.patch('/:pid', [ check('item').not().isEmpty(),
+    check('type').not().isEmpty(),
+    check('quantity').not().isEmpty(),
+    check('price').not().isEmpty()
+  ], productsControllers.updateProduct);
 
-router.get('/:pid',(req, res, next ) =>{
-   const productId = req.params.pid;
-   const product = dummy_products.find(p => {
-        return p.id === productId;
-        
-   });
-
-   if(!product){
-       res.status(404).json({message : "Could not Find a product for provided ID"})
-   }
-   res.json({product});
-});
+router.delete('/:pid',  productsControllers.deleteProduct);
 
 module.exports = router ;

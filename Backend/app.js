@@ -1,10 +1,39 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
-const productRoutes = require('./routes/product-routes');
+const mongoose = require('mongoose');
+const productsRoutes = require('./routes/product-routes');
+const HttpError = require('./models/http-error');
 
 const app = express();
-app.use('/api/products', productRoutes);
+
+app.use(bodyParser.json());
 
 
-app.listen(5000);
+app.use('/api/products', productsRoutes);
+
+app.use(( req, res, next) =>{
+    const error = new HttpError('Could not find this route',404);
+    throw error;
+});
+
+
+
+app.use((error, req, res, next) => {
+    if(res.headerSent){
+        return next(error);
+    }
+    res.status(error.code || 500)
+    res.json({message: error.message || 'An unknown error occurred'});
+});
+
+
+mongoose
+  .connect(
+    `mongodb+srv://Nisarg11:rutvik0007@cluster0.2kz4w.mongodb.net/products?retryWrites=true&w=majority`
+  )
+  .then(() => {
+    app.listen(5000);
+  })
+  .catch(err => {
+    console.log(err);
+  });
