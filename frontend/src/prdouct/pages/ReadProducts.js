@@ -57,13 +57,13 @@ export default class ReadProducts extends Component {
     return (
       <div>
         <h3>Logged Products</h3>
-        <table className="table">
-          <thead className="thead-light">
+        <table >
+          <thead >
             <tr>
               <th>Item</th>
-              <th>Description</th>
-              <th>Duration</th>
-              <th>Date</th>
+              <th>Type</th>
+              <th>Quantity</th>
+              <th>Price</th>
     
             </tr>
           </thead>
