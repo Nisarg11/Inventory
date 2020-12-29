@@ -1,19 +1,37 @@
 const uuid = require('uuid/v4');
 const { validationResult } = require('express-validator');
 
+
 const HttpError = require('../models/http-error');
 const Product = require('../models/product');
 
 
 
-let dummy_products =[{
+const getAllProducts = async(req,res,next) =>
+{
+  
+  let product;
+  try {
+    product = await Product.find({});
+   
+  }
+   catch (err) {
+    const error = new HttpError(
+      'Something went wrong, could not find all products.',
+      500
+    );
+    return next(error);
+}
+if (!product) {
+  const error = new HttpError(
+    'Could not find a product for the provided id.',
+    404
+  );
+  return next(error);
+}
+res.json({ product });
+};
 
-    id: "d1",
-    item: "Hammer",
-    type: "150 S6 DTH",
-    quantity : "01",
-    price: "100000"
-}];
 
 
 
@@ -144,3 +162,4 @@ const deleteProduct = async (req, res, next) => {
  exports.createProduct = createProduct;
  exports.updateProduct = updateProduct;
  exports.deleteProduct = deleteProduct;
+ exports.getAllProducts = getAllProducts;

@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.get('/:pid', productsControllers.getProductById);
 
+router.get('/all/all', productsControllers.getAllProducts);
+
 router.post('/add',[check('item').not().isEmpty(),
 check('type').not().isEmpty(),
 check('quantity').isNumeric().not().isEmpty(),
