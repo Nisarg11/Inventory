@@ -24,9 +24,9 @@ export default class ReadProducts extends Component {
   }
 
   componentDidMount() {
-    axios.get('http://localhost:5000/api/products/all/all')
+    axios.get(process.env.REACT_APP_BACKEND_URL +'/all/all')
       .then(response => {
-        this.setState({ products: response.data })
+        this.setState({ products: response.data.product })
       
       })
       .catch((error) => {
@@ -36,22 +36,15 @@ export default class ReadProducts extends Component {
   }
 
   deleteProduct(id) {
-    axios.delete('http://localhost:5000/api/products/'+id)
+    axios.delete(process.env.REACT_APP_BACKEND_URL +'/'+id)
       .then(response => { console.log(response.data)});
 
     this.setState({
       products: this.state.products.filter(el => el._id !== id)
     })
-    console.log('products');
+  
   }
 
-
-
-  productList() {
-    return this.state.products.map((currentproduct) => {
-      return <Product product={currentproduct} deleteProduct={this.deleteProduct} key={currentproduct._id}/>;
-    })
-  }
 
   render() {
     return (
@@ -68,10 +61,15 @@ export default class ReadProducts extends Component {
             </tr>
           </thead>
           <tbody>
-            { this.productList() }
-          </tbody>
+            { 
+            // eslint-disable-next-line 
+              this.state.products.map((currentproduct,index) => {
+               return <Product product={currentproduct} deleteProduct={this.deleteProduct} key={index} />
+            })
+          }
+              </tbody>
         </table>
       </div>
-    )
+    );
   }
 }
